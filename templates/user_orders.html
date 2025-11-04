@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eKart Your Orders</title>
+    <style>
+ 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+}
+
+.nav-item {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.nav-item:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 80px 20px 20px; 
+}
+
+h1 {
+    text-align: center;
+}
+
+.order {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.order h2 {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+select#status {
+    width: 10%;
+    padding: 12px;
+    border: 2px solid #007bff; /* Blue border to match the navbar */
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #f0f8ff;
+    color: #333;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus effect */
+}
+
+select#status:focus {
+    outline: none;
+    border-color: #0056b3; /* Darker blue on focus */
+    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Subtle shadow for focus */
+}
+
+button {
+    display: block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3); /* Subtle shadow on hover */
+}
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="brand">eKart</a>
+            <div class="navbar-links">
+                <a href="{% url 'view_cart' %}" class="nav-item">View Cart</a>  
+                <a href="{% url 'list_products' %}" class="nav-item">Products</a>
+                <a href="{% url 'user_payments_view' %}" class="nav-item">Payment History</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Orders</h1>
+        <form method="get" action="{% url 'orders_by_status' %}">
+            <label for="status">Order Status:</label>
+            <select name="status" id="status">
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Shipped</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer ID</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.0 }}</td>
+                    <td>{{ order.1 }}</td>
+                    <td>{{ order.2 }}</td>
+                    <td>{{ order.3 }}</td>
+                    <td>{{ order.4 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

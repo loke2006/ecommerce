@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 95%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select, input[type="text"], input[type="date"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #fff;
+            color: #333;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="date"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #007BFF;
+            border: 3.5px solid #007BFF;
+        }
+
+        .payment-fields {
+            margin-top: 20px;
+        }
+
+        .payment-fields label {
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if order %}
+            <form method="POST" action="{% url 'product_payment_view' order.id %}">
+        {% else %}
+            <form method="POST" action="{% url 'cart_payment_view' %}">
+        {% endif %}
+            {% csrf_token %}
+            <label for="payment_method">Select Payment Method:</label>
+            <select name="payment_method" id="payment_method" required>
+                <option value="" disabled selected>Select Payment Method</option>
+                <option value="credit">Credit Card</option>
+                <option value="upi">UPI</option>
+                <option value="bank">Bank Transfer</option>
+            </select>
+
+            <div id="credit_fields" class="payment-fields" style="display: none;">
+                <label for="card_no">Card Number:</label>
+                <input type="text" name="card_no" id="card_no">
+                <label for="holder_name">Holder Name:</label>
+                <input type="text" name="holder_name" id="holder_name">
+                <label for="expiry_date">Expiry Date:</label>
+                <input type="date" name="expiry_date" id="expiry_date">
+            </div>
+
+            <div id="upi_fields" class="payment-fields" style="display: none;">
+                <label for="wallet_id">Wallet ID:</label>
+                <input type="text" name="wallet_id" id="wallet_id">
+                <label for="email">Email:</label>
+                <input type="email" name="email" id="email">
+                <label for="wallet_provider">Wallet Provider:</label>
+                <input type="text" name="wallet_provider" id="wallet_provider">
+            </div>
+
+            <div id="bank_fields" class="payment-fields" style="display: none;">
+                <label for="bank_acc_no">Bank Account Number:</label>
+                <input type="text" name="bank_acc_no" id="bank_acc_no">
+                <label for="bank_name">Bank Name:</label>
+                <input type="text" name="bank_name" id="bank_name">
+            </div>
+
+            <button id="make_payment_button" type="submit">Make Payment</button>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const paymentMethodSelect = document.getElementById('payment_method');
+    const paymentFields = document.querySelectorAll('.payment-fields');
+    const body = document.body;
+    const makePaymentButton = document.getElementById('make_payment_button');
+    const container = document.querySelector('.container');
+
+    paymentFields.forEach(div => div.style.display = 'none');
+
+    paymentMethodSelect.addEventListener('change', function () {
+        paymentFields.forEach(div => div.style.display = 'none');
+        body.style.backgroundColor = '#f4f4f4'; // Reset background color
+        makePaymentButton.style.backgroundColor = '#007BFF'; // Reset button color
+        container.style.backgroundColor = '#fff'; // Reset container background color
+        paymentMethodSelect.style.borderColor = '#ddd'; // Reset select border color
+        const selectedMethod = this.value;
+        if (selectedMethod) {
+            document.getElementById(selectedMethod + '_fields').style.display = 'block';
+            if (selectedMethod === 'upi') {
+                body.style.backgroundColor = 'rgb(248, 131, 121)'; // Change to a pleasant color
+                makePaymentButton.style.backgroundColor = 'rgb(0, 48, 73)'; // Change button color to a dark blue
+                container.style.backgroundColor = 'beige'; // Change container background color to beige
+                paymentMethodSelect.style.borderColor = 'rgb(248, 131, 121)'; // Set border color to match UPI background color
+                // Add event listeners to UPI input fields to change border color to match background color
+                const upiFields = document.querySelectorAll('#upi_fields input');
+                upiFields.forEach(input => {
+                    input.addEventListener('focus', function () {
+                        this.style.borderColor = 'rgb(248, 131, 121)';
+                    });
+                    input.addEventListener('blur', function () {
+                        this.style.borderColor = 'beige'; 
+                    });
+                });
+            }
+            if (selectedMethod === 'credit') {
+                body.style.backgroundColor = 'rgb(173, 216, 230)'; // Change to a pleasant color
+                makePaymentButton.style.backgroundColor = 'rgb(85, 107, 47)'; // Change button color
+                container.style.backgroundColor = 'beige';
+                paymentMethodSelect.style.borderColor = 'rgb(173, 216, 230)'; // Set border color to match Credit background color
+                const creditFields = document.querySelectorAll('#credit_fields input');
+                creditFields.forEach(input => {
+                    input.addEventListener('focus', function () {
+                        this.style.borderColor = 'rgb(173, 216, 230)';
+                    });
+                    input.addEventListener('blur', function () {
+                        this.style.borderColor = 'beige'; 
+                    });
+                });
+            }
+            if (selectedMethod === 'bank') {
+                body.style.backgroundColor = 'rgb(189, 252, 201)'; // Change to a pleasant color
+                makePaymentButton.style.backgroundColor = 'rgb(120, 81, 169)'; // Change button color
+                container.style.backgroundColor = 'beige';
+                paymentMethodSelect.style.borderColor = 'rgb(189, 252, 201)'; // Set border color to match Bank background color
+                const bankFields = document.querySelectorAll('#bank_fields input');
+                bankFields.forEach(input => {
+                    input.addEventListener('focus', function () {
+                        this.style.borderColor = 'rgb(189, 252, 201)';
+                    });
+                    input.addEventListener('blur', function () {
+                        this.style.borderColor = 'beige'; 
+                    });
+                });
+            }
+        }
+    });
+
+    // Ensure the border color changes based on the selected method when the select element loses focus
+    paymentMethodSelect.addEventListener('blur', function () {
+        const selectedMethod = this.value;
+        if (selectedMethod === 'upi') {
+            this.style.borderColor = 'rgb(248, 131, 121)'; // Match UPI background color
+        }
+        if (selectedMethod === 'credit') {
+            this.style.borderColor = 'rgb(173, 216, 230)'; // Match Credit background color
+        }
+        if (selectedMethod === 'bank') {
+            this.style.borderColor = 'rgb(189, 252, 201)'; // Match Bank background color
+        }
+    });
+});
+
+
+    </script>
+</body>
+</html>

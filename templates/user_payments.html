@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eKart Payment History</title>
+    <style>
+        /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    transition: top 0.3s;
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+}
+
+.nav-item {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.nav-item:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 80px 20px 20px; /* Added padding to prevent content from being hidden behind the navbar */
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+tr:hover{
+    background-color: rgb(191, 219, 245);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #c1bfbf;
+}
+
+    </style>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#" class="brand">eKart</a>
+            <div class="navbar-links">
+                <a href="{% url 'view_cart' %}" class="nav-item">View Cart</a>  
+                <a href="{% url 'list_products' %}" class="nav-item">Products</a>
+                <a href="{% url 'user_payments_view' %}" class="nav-item">Payment History</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Your Payments</h1>
+        <p><strong>Total Amount Spent:</strong> ${{ total_spent }}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Payment ID</th>
+                    <th>Payment Date</th>
+                    <th>Total Amount</th>
+                    <th>Payment Type</th>
+                    <th>Payment Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payment_details %}
+                <tr>
+                    <td>{{ payment.order_id }}</td>
+                    <td>{{ payment.payment_id }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>{{ payment.total_amount }}</td>
+                    <td>{{ payment.payment_type }}</td>
+                    <td>{{ payment.payment_detail }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

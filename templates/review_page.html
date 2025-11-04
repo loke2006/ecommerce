@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Page</title>
+    <style>
+        title {
+            color: rgb(7, 7, 246);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #89f7fe 10%, #66a6ff 100%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            color: #444;
+        }
+        select, textarea, input[type="number"] {
+            width: 95%;
+            padding: 12px;
+            border: 2px solid #66a6ff;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        select:focus, textarea:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007BFF;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+        .reviews {
+            list-style: none;
+            padding: 0;
+        }
+        .reviews li {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .reviews li:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .reviews strong {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .no-reviews {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style='color:rgb(7, 7, 246)'>Review Page</h1>
+
+        <!-- Form to select the product -->
+        <form method="get" id="productForm">
+            <label for="product">Select Product:</label>
+            <select name="product" id="product" required>
+                <option value="">--Select Product--</option>
+                {% for product in products %}
+                    <option value="{{ product.id }}" {% if selected_product_id|stringformat:"s" == product.id|stringformat:"s" %}selected{% endif %}>
+                        {{ product.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <script>
+            document.getElementById('product').addEventListener('change', function() {
+                var selectedProductId = this.value;
+                if (selectedProductId) {
+                    var form = document.getElementById('productForm');
+                    form.action = '/reviews/' + selectedProductId + '/';
+                    form.submit();
+                }
+            });
+        </script>
+
+        <!-- Form to submit a review -->
+        <form method="post" action="{% url 'review_page' selected_product_id %}">
+            {% csrf_token %}
+            <input type="hidden" name="product" value="{{ selected_product_id }}">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="rating">Rating:</label>
+            <input type="number" id="rating" name="rating" min="1" max="5" required>
+            <button type="submit">Submit Review</button>
+        </form>
+        
+        {% if reviews %}
+            <h2 style='color:rgb(7, 7, 246)'>Reviews</h2>
+            <ul class="reviews">
+                {% for review in reviews %}
+                    <li>
+                        <strong>{{ review.customer.username }}</strong> ({{ review.rating }}/5):
+                        <p>{{ review.description }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-reviews">No reviews for this product.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
