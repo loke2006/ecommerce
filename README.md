@@ -2,6 +2,8 @@
 
 A comprehensive full-stack e-commerce platform built with Django and Tailwind CSS, providing seamless shopping experience with secure payment processing and customer support.
 
+Note: In views.py search API and find "keep your API key here" and place your gemini api there to make the chat work.
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
