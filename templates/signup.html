@@ -1,142 +1,652 @@
-<html>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Sign In Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - eKart</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
+        /* === FONT IMPORT === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* === CSS VARIABLES (Modern Theme) === */
+        :root {
+            --font-sans: 'Inter', sans-serif;
+            
+            /* Color Palette */
+            --primary: #4F46E5;       /* Indigo-600 */
+            --primary-hover: #4338CA; /* Indigo-700 */
+            --primary-light: rgba(79, 70, 229, 0.1);
+            
+            --surface: #FFFFFF;
+            --background: #F3F4F6;    /* Cool Gray */
+            
+            --text-main: #111827;     /* Gray-900 */
+            --text-muted: #6B7280;    /* Gray-500 */
+            --text-on-primary: #FFFFFF;
+            
+            --border: #D1D5DB;
+            --border-focus: #4F46E5;
+            
+            --danger: #EF4444;
+            --danger-bg: #FEF2F2;
+            
+            /* UI Properties */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        /* === Global Reset & Body === */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            box-sizing: border-box;
         }
-        .container {
-            max-width: 500px;
-            margin: 100px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
-        .container h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
+
+        /* === Header === */
+        .header {
+            padding: 20px 40px;
+            background-color: var(--surface);
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Sticky header optional */
+            position: sticky; 
+            top: 0;
+            z-index: 10;
         }
-        .form-group {
-            margin-bottom: 15px;
+        
+        .brand {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+        /* Add this to your CSS */
+        select option {
+            max-height: 200px;
+            overflow-y: auto;
         }
-        .form-group input {
+
+        /* === Signup Container === */
+        .signup-container {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            max-width: 480px;
+            margin: 40px auto;
+            padding: 40px;
+            background-color: var(--surface);
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-lg);
+            animation: slideUp 0.5s ease-out;
         }
-        .form-group .password-wrapper {
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signup-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* === Form Styling === */
+        .form-group {
+            margin-bottom: 20px;
             position: relative;
         }
-        .form-group {
-            padding-right: 40px;
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
         }
-        .form-group .password-wrapper .toggle-password {
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background-color: var(--surface);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            transition: var(--transition);
+            appearance: none; /* Removes default browser styling for selects */
+        }
+
+        /* Custom Arrow for Select */
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        .form-group select:disabled {
+            background-color: #F9FAFB;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Focus States */
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+            outline: none;
+        }
+
+        /* === Password Toggle === */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper input {
+            padding-right: 50px;
+        }
+        .toggle-password {
             position: absolute;
             top: 50%;
-            right: 10px;
+            right: 15px;
             transform: translateY(-50%);
             cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            border-radius: 50%;
         }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
+        .toggle-password:hover {
+            color: var(--primary);
+            background-color: var(--background);
+        }
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* === Dynamic Phone Number Styling === */
+        .phone-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .remove-phone-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            font-size: 1.5rem;
+            line-height: 1;
             cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
         }
-        .btn:hover {
-            background-color: #0056b3;
-            
+        .remove-phone-btn:hover {
+            background-color: var(--danger);
+            color: white;
+            transform: scale(1.05);
         }
+
+        /* === Error Messages === */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 6px;
+            font-weight: 500;
+            display: none; /* Managed by JS */
+            animation: fadeIn 0.2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === Button Hierarchy === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 12px;
+            border: none;
+            letter-spacing: 0.025em;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--text-on-primary);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background-color: var(--surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            margin-top: 25px;
+        }
+        .btn-secondary:hover {
+            background-color: #F9FAFB;
+            border-color: var(--text-muted);
+            color: var(--text-main);
+        }
+
+        /* === Form Footer === */
         .form-footer {
-            margin-top: 1rem;
+            margin-top: 2rem;
             text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
         }
         .form-footer a {
-            color: #007bff;
+            color: var(--primary);
             text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
         }
         .form-footer a:hover {
+            color: var(--primary-hover);
             text-decoration: underline;
+        }
+
+        /* === Responsive === */
+        @media (max-width: 640px) {
+            .signup-container {
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+                padding: 25px;
+                min-height: calc(100vh - 70px); /* Adjust for header */
+            }
+            .header {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome</h1>
-        <form method="post">
+    <header class="header">
+        <a href="#" class="brand">eKart</a>
+    </header>
+    
+    <div class="signup-container">
+        <h1>Create Your eKart Account</h1>
+        
+        <form method="post" id="signup-form">
             {% csrf_token %}
+            
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+                <div class="error-message" id="error-name"></div>
             </div>
+            
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
             </div>
+            
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <span class="toggle-password" id="toggle-password" title="Show/Hide Password">
+                        <svg id="icon-show" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639l4.436-7.14a1.012 1.012 0 0 1 .638-.426h11.758a1.012 1.012 0 0 1 .638.426l4.436 7.14a1.012 1.012 0 0 1 0 .639l-4.436 7.14a1.012 1.012 0 0 1-.638.426H7.11a1.012 1.012 0 0 1-.638-.426l-4.436-7.14Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <svg id="icon-hide" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.774 3.162 10.066 7.498a10.522 10.522 0 0 1-4.293 5.77V7.227l-4.243 4.242-4.243-4.243-1.27-1.27Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m1.646 1.646 20.708 20.708" />
+                        </svg>                          
+                    </span>
+                </div>
+                <div class="error-message" id="error-password"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="house_number">House No / Apartment</label>
+                <input type="text" id="house_number" name="house_number" placeholder="e.g. Flat 4B, Sunshine Apts" required>
+                <div class="error-message" id="error-house_number"></div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <select id="state" name="state" required>
+                        <option value="">Select State</option>
+                    </select>
+                    <div class="error-message" id="error-state"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <select id="city" name="city" required disabled>
+                        <option value="">Select City</option>
+                    </select>
+                    <div class="error-message" id="error-city"></div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="house_number">House No</label>
-                <input type="text" id="house_number" name="house_number" required>
-            </div>
-            <div class="form-group">
-                <label for="city">City</label>
-                <input type="text" id="city" name="city" required>
-            </div>
-            <div class="form-group">
-                <label for="state">State</label>
-                <input type="text" id="state" name="state" required>
-            </div>
+            
+            
             <div id="phone-numbers">
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="text" id="phone" name="phone" required>
+                    <label for="phone1">Phone Number</label>
+                    <div class="phone-input-wrapper">
+                        <input type="text" id="phone1" name="phone" placeholder="10-digit mobile number" required>
+                    </div>
+                    <div class="error-message" id="error-phone1"></div>
                 </div>
             </div>
-            <button type="button" onclick="addPhoneNumber()" class="btn">Add Another Phone Number</button>
-            <button type="submit" class="btn">Sign Up</button>
+            
+            <button type="button" onclick="addPhoneNumber()" class="btn btn-secondary">
+                + Add Another Phone Number
+            </button>
+            
+            <button type="submit" class="btn btn-primary">Create Account</button>
+            
             <div class="form-footer">
-                <p>Already have an account?<a href="{% url 'login' %}"> Login</a></p>
+                <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
             </div>
         </form>
     </div>
 
-    <script>
-        function addPhoneNumber() {
-            var phoneNumbersDiv = document.getElementById("phone-numbers");
-            var newPhoneDiv = document.createElement("div");
-            newPhoneDiv.className = "form-group";
-            var newLabel = document.createElement("label");
-            newLabel.setAttribute("for", "phone");
-            newLabel.textContent = "Phone Number";
-            var newInput = document.createElement("input");
-            newInput.setAttribute("type", "text");
-            newInput.setAttribute("name", "phone");
-            newInput.required = true;
-            newPhoneDiv.appendChild(newLabel);
-            newPhoneDiv.appendChild(newInput);
-            phoneNumbersDiv.appendChild(newPhoneDiv);
+<script>
+    // --- State and City Data ---
+    const citiesByState = {
+        'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur', 'Nellore', 'Kurnool', 'Kadapa', 'Rajahmundry', 'Kakinada', 'Tirupati', 'Anantapur', 'Chittoor', 'Amalapuram', 'Tenali', 'Proddatur', 'Eluru'],
+        'Arunachal Pradesh': ['Itanagar', 'Naharlagun', 'Pasighat', 'Roing', 'Tezu', 'Ziro', 'Along', 'Bomdila', 'Daporijo', 'Aalo', 'Tawang', 'Khonsa', 'Anini', 'Changlang', 'Seppa'],
+        'Assam': ['Guwahati', 'Silchar', 'Dibrugarh', 'Jorhat', 'Nagaon', 'Tinsukia', 'Tezpur', 'Sivasagar', 'Bongaigaon', 'Karimganj', 'Hailakandi', 'North Lakhimpur', 'Dhubri', 'Goalpara', 'Barpeta'],
+        'Bihar': ['Patna', 'Gaya', 'Bhagalpur', 'Muzaffarpur', 'Purnia', 'Darbhanga', 'Bihar Sharif', 'Arrah', 'Begusarai', 'Katihar', 'Munger', 'Chhapra', 'Danapur', 'Saharsa', 'Sasaram'],
+        'Chhattisgarh': ['Raipur', 'Bhilai', 'Bilaspur', 'Korba', 'Durg', 'Raigarh', 'Rajnandgaon', 'Jagdalpur', 'Ambikapur', 'Mahasamund', 'Dhamtari', 'Chirmiri', 'Kanker', 'Kondagaon', 'Balod'],
+        'Goa': ['Panaji', 'Margao', 'Mapusa', 'Ponda', 'Vasco da Gama', 'Curchorem', 'Sancoale', 'Bicholim', 'Valpoi', 'Canacona', 'Quepem', 'Cuncolim', 'Calangute', 'Porvorim', 'Aldona'],
+        'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Gandhidham', 'Nadiad', 'Morbi', 'Surendranagar', 'Bharuch', 'Anand', 'Porbandar'],
+        'Haryana': ['Faridabad', 'Gurgaon', 'Panipat', 'Ambala', 'Yamunanagar', 'Rohtak', 'Hisar', 'Karnal', 'Sonipat', 'Panchkula', 'Bhiwani', 'Sirsa', 'Bahadurgarh', 'Jind', 'Thanesar'],
+        'Himachal Pradesh': ['Shimla', 'Mandi', 'Solan', 'Dharamshala', 'Kullu', 'Manali', 'Palampur', 'Una', 'Bilaspur', 'Chamba', 'Hamirpur', 'Nahan', 'Parwanoo', 'Nurpur', 'Dalhousie'],
+        'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro Steel City', 'Deoghar', 'Phusro', 'Hazaribagh', 'Giridih', 'Ramgarh', 'Medininagar (Daltonganj)', 'Chirkunda', 'Jhumri Tilaiya', 'Sahibganj', 'Bokaro', 'Chatra'],
+        'Karnataka': ['Bangalore', 'Mysore', 'Hubli-Dharwad', 'Mangalore', 'Belgaum', 'Gulbarga', 'Davanagere', 'Bellary', 'Bijapur', 'Shimoga', 'Tumkur', 'Raichur', 'Bidar', 'Hospet', 'Hassan'],
+        'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Kollam', 'Thrissur', 'Palakkad', 'Alappuzha', 'Malappuram', 'Kannur', 'Kottayam', 'Manjeri', 'Neyyattinkara', 'Kasaragod', 'Kannur', 'Vadakara'],
+        'Madhya Pradesh': ['Indore', 'Bhopal', 'Jabalpur', 'Gwalior', 'Ujjain', 'Sagar', 'Dewas', 'Satna', 'Ratlam', 'Rewa', 'Murwara (Katni)', 'Singrauli', 'Burhanpur', 'Khandwa', 'Bhind'],
+        'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Kalyan-Dombivali', 'Vasai-Virar', 'Aurangabad', 'Navi Mumbai', 'Solapur', 'Mira-Bhayandar', 'Bhiwandi', 'Amravati', 'Nanded', 'Kolhapur'],
+        'Manipur': ['Imphal', 'Thoubal', 'Lilong', 'Mayang Imphal', 'Churachandpur', 'Nambol', 'Kakching', 'Yairipok', 'Wangoi', 'Sugnu', 'Jiribam', 'Kakching Khunou', 'Moirang', 'Wangjing', 'Heirok'],
+        'Meghalaya': ['Shillong', 'Tura', 'Jowai', 'Nongstoin', 'Williamnagar', 'Baghmara', 'Resubelpara', 'Mankachar', 'Nongpoh', 'Khliehriat', 'Mahendraganj', 'Amlarem', 'Mawkyrwat', 'Mairang', 'Cherrapunji'],
+        'Mizoram': ['Aizawl', 'Lunglei', 'Saiha', 'Champhai', 'Serchhip', 'Kolasib', 'Lawngtlai', 'Saitual', 'Khawzawl', 'Buarpui', 'Zawlnuam', 'Thingsulthliah', 'Hnahthial', 'Tlabung', 'N.Vanlaiphai'],
+        'Nagaland': ['Kohima', 'Dimapur', 'Mokokchung', 'Tuensang', 'Wokha', 'Zunheboto', 'Phek', 'Chumukedima', 'Mon', 'Changtongya', 'Zamirang', 'Longleng', 'Meluri', 'Satakha', 'Chizami'],
+        'Odisha': ['Bhubaneswar', 'Cuttack', 'Rourkela', 'Brahmapur', 'Sambalpur', 'Puri', 'Balasore', 'Bhadrak', 'Baripada', 'Jharsuguda', 'Jeypore', 'Bargarh', 'Rayagada', 'Bhawanipatna', 'Dhenkanal'],
+        'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Hoshiarpur', 'Mohali', 'Batala', 'Pathankot', 'Moga', 'Abohar', 'Malerkotla', 'Khanna', 'Phagwara', 'Muktasar'],
+        'Rajasthan': ['Jaipur', 'Jodhpur', 'Kota', 'Bikaner', 'Ajmer', 'Udaipur', 'Bhilwara', 'Alwar', 'Bharatpur', 'Sikar', 'Pali', 'Sri Ganganagar', 'Barmer', 'Tonk', 'Kishangarh'],
+        'Sikkim': ['Gangtok', 'Rangpo', 'Namchi', 'Mangan', 'Gyalshing', 'Singtam', 'Jorethang', 'Ravangla', 'Nayabazar', 'Rhenock', 'Soreng', 'Majhitar', 'Melli', 'Bermiok', 'Nepalganj'],
+        'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Tiruppur', 'Salem', 'Erode', 'Tirunelveli', 'Vellore', 'Thoothukudi', 'Dindigul', 'Thanjavur', 'Ranipet', 'Sivakasi', 'Karur'],
+        'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Karimnagar', 'Ramagundam', 'Khammam', 'Mahbubnagar', 'Nalgonda', 'Adilabad', 'Suryapet', 'Miryalaguda', 'Jagtial', 'Vikarabad', 'Mancherial', 'Bhongir'],
+        'Tripura': ['Agartala', 'Udaipur', 'Dharmanagar', 'Kailasahar', 'Ambassa', 'Khowai', 'Belonia', 'Sonamura', 'Kamalpur', 'Sabroom', 'Amarpur', 'Bishalgarh', 'Mohanpur', 'Jogendranagar', 'Teliamura'],
+        'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Aligarh', 'Moradabad', 'Saharanpur', 'Gorakhpur', 'Noida', 'Firozabad', 'Loni', 'Jhansi'],
+        'Uttarakhand': ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rudrapur', 'Kashipur', 'Rishikesh', 'Ramnagar', 'Manglaur', 'Jaspur', 'Srinagar', 'Kotdwar', 'Bageshwar', 'Nainital', 'Pithoragarh'],
+        'West Bengal': ['Kolkata', 'Asansol', 'Siliguri', 'Durgapur', 'Bardhaman', 'Malda', 'Baharampur', 'Habra', 'Kharagpur', 'Shantipur', 'Dankuni', 'Dhulian', 'Ashoknagar Kalyangarh', 'Bankura', 'Darjeeling']
+    };
+
+    // --- State/City Logic ---
+    function populateStateOptions() {
+        const stateSelect = document.getElementById('state');
+        // Populate State dropdown
+        Object.keys(citiesByState).forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.text = state;
+            stateSelect.appendChild(option);
+        });
+    }
+
+    function updateCityOptions() {
+        const stateSelect = document.getElementById('state');
+        const citySelect = document.getElementById('city');
+        const selectedState = stateSelect.value;
+
+        // Clear previous options
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        citySelect.disabled = true; // Disable until a state is selected
+
+        if (selectedState && citiesByState[selectedState]) {
+            citiesByState[selectedState].forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.text = city;
+                citySelect.appendChild(option);
+            });
+            citySelect.disabled = false; // Enable city dropdown
         }
-    </script>
+    }
+
+    // --- Validation Logic ---
+    function validateForm(event) {
+        let isValid = true;
+
+        // Helper function to show/hide error messages
+        function displayError(id, message) {
+            const errorElement = document.getElementById(id);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = message ? 'block' : 'none';
+            }
+            if(message) isValid = false;
+        }
+
+        // 1. Name Validation
+        const name = document.getElementById('name').value.trim();
+        if (!name) {
+            displayError('error-name', 'Name is required.');
+        } else if (!/^[A-Za-z\s]+$/.test(name)) {
+            displayError('error-name', 'Name can only contain letters and spaces.');
+        } else {
+            displayError('error-name', '');
+        }
+
+        // 2. Password Validation (Corrected Regex)
+       const password = document.getElementById('password').value;
+
+// Regex now checks for:
+// - at least 1 lowercase
+// - at least 1 uppercase
+// - at least 1 number
+// - at least 1 special character
+// - minimum 8 characters total
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+if (!passwordRegex.test(password)) {
+    displayError(
+        'error-password',
+        'Min 8 chars, must include: 1 Uppercase, 1 Lowercase, 1 Number, 1 Special Character (@$!%*?&).'
+    );
+} else {
+    displayError('error-password', '');
+}
+
+
+        // 3. House No Validation
+        const house_number = document.getElementById('house_number').value.trim();
+        if (!house_number) {
+            displayError('error-house_number', 'House No is required.');
+        } else if (!/^[A-Za-z0-9\s,\/\-]+$/.test(house_number)) {
+            displayError('error-house_number', 'Invalid characters in House No.');
+        } else {
+            displayError('error-house_number', '');
+        }
+
+        // 4. Phone Number Validation (FIXED SYNTAX ERROR HERE)
+        const phoneInputs = document.querySelectorAll('#phone-numbers input[name="phone"]');
+        phoneInputs.forEach((input) => {
+            const phoneId = input.id;
+            const phoneValue = input.value.trim();
+            // Added backticks for template literal
+            const phoneErrorId = `error-${phoneId}`;
+
+            // Create error element if it doesn't exist
+            let errorElement = document.getElementById(phoneErrorId);
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'error-message';
+                errorElement.id = phoneErrorId;
+                input.parentElement.parentElement.appendChild(errorElement);
+            }
+
+            if (!phoneValue) {
+                displayError(phoneErrorId, 'Phone number is required.');
+            } else if (!/^\d{10}$/.test(phoneValue)) {
+                displayError(phoneErrorId, 'Phone must be exactly 10 digits.');
+            } else {
+                displayError(phoneErrorId, '');
+            }
+        });
+
+        // 5. State/City Validation
+        const state = document.getElementById('state').value;
+        const city = document.getElementById('city').value;
+
+        if (!state) {
+            displayError('error-state', 'Please select a state.');
+        } else {
+            displayError('error-state', '');
+        }
+
+        if (!city) {
+            displayError('error-city', 'Please select a city.');
+        } else {
+            displayError('error-city', '');
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    }
+
+    // --- Document Ready / Initialization ---
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initialize State dropdown options
+        populateStateOptions();
+
+        // Add event listeners
+        const stateSelect = document.getElementById('state');
+        stateSelect.addEventListener('change', updateCityOptions);
+
+        const signupForm = document.getElementById('signup-form');
+        signupForm.addEventListener('submit', validateForm);
+
+        // --- Password Show/Hide Toggle ---
+        const togglePassword = document.getElementById('toggle-password');
+        const password = document.getElementById('password');
+        const iconShow = document.getElementById('icon-show');
+        const iconHide = document.getElementById('icon-hide');
+
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+
+                if (type === 'password') {
+                    iconShow.style.display = 'block';
+                    iconHide.style.display = 'none';
+                } else {
+                    iconShow.style.display = 'none';
+                    iconHide.style.display = 'block';
+                }
+            });
+        }
+    });
+
+    // --- Add Phone Number ---
+    let phoneCount = 1;
+    function addPhoneNumber() {
+        phoneCount++;
+        var phoneNumbersDiv = document.getElementById("phone-numbers");
+
+        var newPhoneDiv = document.createElement("div");
+        newPhoneDiv.className = "form-group";
+
+        var newLabel = document.createElement("label");
+        newLabel.setAttribute("for", "phone" + phoneCount);
+        newLabel.textContent = "Phone Number " + phoneCount;
+
+        var inputWrapper = document.createElement("div");
+        inputWrapper.className = "phone-input-wrapper";
+
+        var newInput = document.createElement("input");
+        newInput.setAttribute("type", "text");
+        newInput.setAttribute("id", "phone" + phoneCount);
+        newInput.setAttribute("name", "phone");
+        newInput.placeholder = "10-digit mobile number";
+        newInput.required = true;
+
+        var errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.id = "error-phone" + phoneCount;
+
+        var removeBtn = document.createElement("span");
+        removeBtn.className = "remove-phone-btn";
+        removeBtn.innerHTML = "&times;";
+        removeBtn.onclick = function() {
+            phoneNumbersDiv.removeChild(newPhoneDiv);
+        };
+
+        inputWrapper.appendChild(newInput);
+        inputWrapper.appendChild(removeBtn);
+        newPhoneDiv.appendChild(newLabel);
+        newPhoneDiv.appendChild(inputWrapper);
+        newPhoneDiv.appendChild(errorDiv);
+        phoneNumbersDiv.appendChild(newPhoneDiv);
+    }
+</script>
 </body>
 </html>

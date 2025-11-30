@@ -1,154 +1,356 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Page</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Product Reviews - eKart</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#3caff6",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101b22",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+            },
+          },
+        }
+    </script>
     <style>
-        title {
-            color: rgb(7, 7, 246);
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #89f7fe 10%, #66a6ff 100%);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        h1, h2 {
-            text-align: center;
-            color: #333;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        form {
-            display: flex;
+        
+        .navbar-links.nav-active {
+            display: flex !important;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 50;
         }
-        label {
-            font-weight: bold;
-            color: #444;
+        
+        .dark .navbar-links.nav-active {
+            background: #1e293b;
         }
-        select, textarea, input[type="number"] {
-            width: 95%;
-            padding: 12px;
-            border: 2px solid #66a6ff;
-            border-radius: 5px;
-            font-size: 1em;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-        select:focus, textarea:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-        }
-        button {
-            width: 100%;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-        }
-        .reviews {
-            list-style: none;
-            padding: 0;
-        }
-        .reviews li {
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        .reviews li:hover {
-            background-color: #f1f1f1;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .reviews strong {
-            display: block;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .no-reviews {
-            text-align: center;
-            color: #777;
+        
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex !important;
+                flex-direction: row !important;
+                position: static !important;
+                background: transparent !important;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1 style='color:rgb(7, 7, 246)'>Review Page</h1>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0d161c] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
 
-        <!-- Form to select the product -->
-        <form method="get" id="productForm">
-            <label for="product">Select Product:</label>
-            <select name="product" id="product" required>
-                <option value="">--Select Product--</option>
-                {% for product in products %}
-                    <option value="{{ product.id }}" {% if selected_product_id|stringformat:"s" == product.id|stringformat:"s" %}selected{% endif %}>
-                        {{ product.name }}
-                    </option>
-                {% endfor %}
-            </select>
-        </form>
+<!-- Navbar - FROM list_products.html -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-4 md:px-10 py-3 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+<nav class="navbar w-full">
+<div class="navbar-container flex items-center justify-between w-full">
+<a href="{% url 'list_products' %}" class="brand text-primary font-bold text-xl">eKart</a>
+<button class="menu-toggle md:hidden" id="menu-toggle" aria-label="Toggle navigation">
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current"></span>
+</button>
+<div class="navbar-links hidden md:flex items-center gap-6" id="navbar-links">
+<a href="{% url 'view_cart' %}" class="cart-overview flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" aria-label="View Cart">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="cart-count bg-primary text-white rounded-full px-2 py-0.5 text-xs font-bold">{{ cart_item_count|default:0  }}</span>
+</a>
+<a href="{% url 'user_orders_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">My Orders</a>
+<a href="{% url 'user_payments_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Payment History</a>
+<a href="{% url 'chat_page' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Chat Assistant</a>
+<form method="POST" action="{% url 'custom_logout' %}" class="logout-form" style="display: inline;">
+{% csrf_token %}
+<button type="submit" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</button>
+</form>
+</div>
+</div>
+</nav>
+</header>
 
-        <script>
-            document.getElementById('product').addEventListener('change', function() {
-                var selectedProductId = this.value;
-                if (selectedProductId) {
-                    var form = document.getElementById('productForm');
-                    form.action = '/reviews/' + selectedProductId + '/';
-                    form.submit();
-                }
-            });
-        </script>
+<main class="flex-1">
+<div class="layout-content-container flex flex-col w-full px-4 md:px-10 py-8">
 
-        <!-- Form to submit a review -->
-        <form method="post" action="{% url 'review_page' selected_product_id %}">
-            {% csrf_token %}
-            <input type="hidden" name="product" value="{{ selected_product_id }}">
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
-            <label for="rating">Rating:</label>
-            <input type="number" id="rating" name="rating" min="1" max="5" required>
-            <button type="submit">Submit Review</button>
-        </form>
-        
-        {% if reviews %}
-            <h2 style='color:rgb(7, 7, 246)'>Reviews</h2>
-            <ul class="reviews">
-                {% for review in reviews %}
-                    <li>
-                        <strong>{{ review.customer.username }}</strong> ({{ review.rating }}/5):
-                        <p>{{ review.description }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="no-reviews">No reviews for this product.</p>
-        {% endif %}
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center gap-2 text-sm">
+        <li><a href="{% url 'list_products' %}" class="text-primary hover:underline">Home</a></li>
+        <li class="text-slate-400">/</li>
+        <li><a href="{% url 'list_products' %}" class="text-primary hover:underline">Products</a></li>
+        <li class="text-slate-400">/</li>
+        <li class="text-slate-600 dark:text-slate-400 font-medium">Reviews</li>
+    </ol>
+</nav>
+
+<h1 class="text-4xl font-bold text-[#0d161c] dark:text-white mb-8">Product Reviews</h1>
+
+<!-- Product Selection Form -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-6 mb-8">
+    <form method="get" id="productForm" class="select-form">
+        <div class="mb-0">
+            <label for="product" class="block text-sm font-semibold text-[#0d161c] dark:text-slate-200 mb-3">Select a Product to View/Submit Reviews:</label>
+            <div class="flex gap-2">
+                <select name="product" id="product" required class="flex-grow px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-[#0d161c] dark:text-white text-sm font-medium">
+                    <option value="">--Select Product--</option>
+                    {% for product in products %}
+                        <option value="{{ product.id }}" {% if selected_product_id|stringformat:"s" == product.id|stringformat:"s" %}selected{% endif %}>
+                            {{ product.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="px-6 py-2 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors">
+                    View Reviews
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if selected_product_id %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Review Form -->
+    <div class="lg:col-span-1">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-6 sticky top-24">
+            <h2 class="text-xl font-bold text-[#0d161c] dark:text-white mb-6">Submit Your Review</h2>
+            
+            <form method="post" action="{% url 'review_page' selected_product_id %}" class="review-form" id="reviewSubmitForm">
+                {% csrf_token %}
+                <input type="hidden" name="product" value="{{ selected_product_id }}">
+                
+                <!-- Review Text -->
+                <div class="mb-5">
+                    <label for="description" class="block text-sm font-semibold text-[#0d161c] dark:text-slate-200 mb-2">Your Review:</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Share your experience with this product..." required class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-[#0d161c] dark:text-white text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"></textarea>
+                </div>
+                
+                <!-- Rating -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-[#0d161c] dark:text-slate-200 mb-3">Your Rating:</label>
+                    <div class="flex gap-2 text-2xl">
+                        <input type="radio" id="star1" name="rating" value="1" class="hidden" />
+                        <label for="star1" class="cursor-pointer text-slate-400 hover:text-yellow-400 transition-colors">★</label>
+                        
+                        <input type="radio" id="star2" name="rating" value="2" class="hidden" />
+                        <label for="star2" class="cursor-pointer text-slate-400 hover:text-yellow-400 transition-colors">★</label>
+                        
+                        <input type="radio" id="star3" name="rating" value="3" class="hidden" />
+                        <label for="star3" class="cursor-pointer text-slate-400 hover:text-yellow-400 transition-colors">★</label>
+                        
+                        <input type="radio" id="star4" name="rating" value="4" class="hidden" />
+                        <label for="star4" class="cursor-pointer text-slate-400 hover:text-yellow-400 transition-colors">★</label>
+                        
+                        <input type="radio" id="star5" name="rating" value="5" class="hidden" />
+                        <label for="star5" class="cursor-pointer text-slate-400 hover:text-yellow-400 transition-colors">★</label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-2 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors">
+                    <span class="material-symbols-outlined inline text-base mr-1">send</span>
+                    Submit Review
+                </button>
+            </form>
+        </div>
     </div>
+
+    <!-- Reviews Display -->
+    <div class="lg:col-span-2">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-6">
+            <h2 class="text-2xl font-bold text-[#0d161c] dark:text-white mb-6">Customer Reviews</h2>
+            
+            {% if reviews %}
+                <div class="space-y-5">
+                    {% for review in reviews %}
+                    <div class="border-b border-slate-200 dark:border-slate-700 pb-5 last:border-b-0">
+                        <!-- Review Header -->
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <p class="font-semibold text-[#0d161c] dark:text-white">{{ review.customer.get_full_name|default:review.customer.email }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ review.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            <!-- Star Rating -->
+                            <div class="flex text-yellow-400 text-lg">
+                                {% for i in "12345" %}
+                                    {% if review.rating >= i|add:0 %}
+                                        <span>★</span>
+                                    {% else %}
+                                        <span class="text-slate-300">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ml-2 text-sm text-slate-600 dark:text-slate-400">({{ review.rating }}/5)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Review Text -->
+                        <p class="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">{{ review.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-6xl text-slate-300 block mb-4">rate_review</span>
+                    <p class="text-slate-600 dark:text-slate-400 text-lg">No reviews yet. Be the first to review this product!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- No Product Selected -->
+<div class="text-center py-16">
+    <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-800 mb-6">
+        <span class="material-symbols-outlined text-6xl text-slate-400">search</span>
+    </div>
+    <h2 class="text-2xl font-bold text-[#0d161c] dark:text-white mb-4">Select a Product</h2>
+    <p class="text-slate-600 dark:text-slate-400 mb-8">Choose a product from the dropdown above to see and submit reviews.</p>
+</div>
+{% endif %}
+
+</div>
+</main>
+
+<!-- Footer - FROM list_products.html -->
+<footer class="bg-slate-100 dark:bg-slate-900 mt-20 px-4 md:px-10 py-12 text-[#0d161c] dark:text-slate-100 border-t border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 container mx-auto">
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Customer Service</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Shipping & Returns</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Order Tracking</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">About Us</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Shop</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">New Arrivals</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Best Sellers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sale</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Company</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sustainability</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Investor Relations</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Newsletter</h4>
+<p class="text-sm mb-4">Subscribe to get special offers and updates!</p>
+<div class="flex gap-2">
+<input type="email" placeholder="Your email" class="flex-grow px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0d161c] dark:text-white">
+<button type="button" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors">→</button>
+</div>
+</div>
+</div>
+<div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+<p class="text-sm text-slate-600 dark:text-slate-400">&copy; {% now "Y" %} eKart. All Rights Reserved.</p>
+</div>
+</footer>
+
+<!-- Floating Action Buttons -->
+<button id="go-to-top-btn" 
+        class="fixed bottom-6 right-6 w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center z-40"
+        aria-label="Go to top">
+    <span class="material-symbols-outlined">arrow_upward</span>
+</button>
+
+</div>
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('navbar-links');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+        });
+    }
+    
+    // Star Rating Interactive
+    const stars = document.querySelectorAll('label[for^="star"]');
+    stars.forEach(star => {
+        star.addEventListener('mouseenter', function() {
+            const rating = this.getAttribute('for').replace('star', '');
+            updateStars(rating);
+        });
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('for').replace('star', '');
+            document.getElementById(`star${rating}`).checked = true;
+        });
+    });
+    
+    function updateStars(rating) {
+        for (let i = 1; i <= 5; i++) {
+            const label = document.querySelector(`label[for="star${i}"]`);
+            if (i <= rating) {
+                label.classList.add('text-yellow-400');
+                label.classList.remove('text-slate-400');
+            } else {
+                label.classList.remove('text-yellow-400');
+                label.classList.add('text-slate-400');
+            }
+        }
+    }
+    
+    // Go to Top Button
+    const goToTopBtn = document.getElementById('go-to-top-btn');
+    if (goToTopBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                goToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                goToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+        
+        goToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    
+    // Product form auto-submit
+    document.getElementById('product').addEventListener('change', function() {
+        document.getElementById('productForm').submit();
+    });
+});
+</script>
 </body>
 </html>

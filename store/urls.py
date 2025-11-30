@@ -7,6 +7,10 @@ from .views import list_products_view, order_product_view,remove_from_cart_view,
 urlpatterns = [
     path('', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
+    path('logout/', views.custom_logout_view, name='custom_logout'),
+    path('api/order-items/<int:order_id>/', views.get_order_items_api, name='get_order_items_api'),
+
+
     path('products/', list_products_view, name='list_products'),
     path('order/<int:product_id>/', order_product_view, name='order_product'),
     path('payment/<int:order_id>/',product_payment_view, name='product_payment_view'),
@@ -19,5 +23,10 @@ urlpatterns = [
     path('invoice/<int:invoice_id>/', view_invoice, name='view_invoice'),
     path('orders/', user_orders_view, name='user_orders_view'),
     path('reviews/<int:product_id>/', review_page, name='review_page'),
-    path('order_status/', views.orders_by_status_view, name='orders_by_status'), # Updated URL
+    path('order_status/', views.orders_by_status_view, name='orders_by_status'),
+    path('chat-api/', views.chat_api, name='chat_api'),
+    path('chat/', views.chat_page, name='chat_page'), # Updated URL
+    path('forgot/', views.forgot_password_view, name='forgot_password'),
+
 ]
+

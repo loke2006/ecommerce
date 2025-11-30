@@ -92,16 +92,16 @@ class Payment(models.Model):
 
 class CreditPayment(models.Model):
     payment = models.OneToOneField('Payment', on_delete=models.CASCADE, related_name='credit')
-    card_no = models.CharField(max_length=16, unique=True)
+    card_no = models.CharField(max_length=16)
     holder_name = models.CharField(max_length=100)
-    expiry_date = models.DateField()
+    expiry_date = models.CharField(max_length=5)
 
     def __str__(self):
         return f"Credit Payment {self.payment.id}"
 
 class UPIPayment(models.Model):
     payment = models.OneToOneField('Payment', on_delete=models.CASCADE, related_name='upi')
-    wallet_id = models.CharField(max_length=100, unique=True)
+    wallet_id = models.CharField(max_length=100)
     email = models.EmailField()
     wallet_provider = models.CharField(max_length=100)
 
@@ -110,7 +110,7 @@ class UPIPayment(models.Model):
 
 class BankPayment(models.Model):
     payment = models.OneToOneField('Payment', on_delete=models.CASCADE, related_name='bank')
-    bank_acc_no = models.CharField(max_length=20, unique=True)
+    bank_acc_no = models.CharField(max_length=20)
     bank_name = models.CharField(max_length=100)
 
     def __str__(self):

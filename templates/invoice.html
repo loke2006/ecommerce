@@ -1,146 +1,369 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eKart Invoice</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Invoice - eKart</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#3caff6",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101b22",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+            },
+          },
+        }
+    </script>
     <style>
-        /* styles.css */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-
-        .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: auto;
+        
+        .navbar-links.nav-active {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 50;
         }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        
+        .dark .navbar-links.nav-active {
+            background: #1e293b;
         }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        h2 {
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-            color: #007bff;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .back-link:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #555;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tbody tr:hover {
-            background-color: rgb(191, 219, 245);
-        }
-
-        /* Responsive design */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 24px;
+        
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex !important;
+                flex-direction: row !important;
+                position: static !important;
+                background: transparent !important;
             }
-
-            p, th, td {
-                font-size: 12px;
+        }
+        
+        @media print {
+            .navbar, .footer, .no-print, #go-to-top-btn {
+                display: none !important;
+            }
+            body {
+                padding-top: 0 !important;
             }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h2>Invoice</h2>
-            <h1>eKart</h1> <!-- Company Name on the top right -->
-        </div>
-        <a href="{% url 'list_products' %}" class="back-link">Back to Products</a>
-        <p><strong>Invoice Id:</strong> {{ invoice.invoice_id }}</p>
-        <p><strong>Invoice Date:</strong> {{ invoice.invoice_date }}</p>
-        <p><strong>Payment ID:</strong> {{ invoice.payment_id }}</p>
-        <p><strong>Order ID:</strong> {{ invoice.order_id }}</p>
-        <p><strong>Total Amount:</strong> ${{ invoice.total_amount }}</p>
-        <p><strong>Customer Name:</strong> {{ invoice.customer_name }}</p>
-        <p><strong>Customer Email:</strong> {{ invoice.customer_email }}</p>
-        <p><strong>Customer Phone Numbers:</strong></p>
-        <ul>
-            {% for phone in phone_numbers %}
-                <li>{{ phone }}</li>
-            {% endfor %}
-        </ul>
-        <p><strong>Customer Address:</strong> {{ invoice.customer_address }}</p>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0d161c] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
 
-        <h2>Order Details</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Price per Item</th>
-                    <th>Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                <tr>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ item.price_per_item }}</td>
-                    <td>${{ item.total_price }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<!-- Navbar - FROM list_products.html -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-4 md:px-10 py-3 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+<nav class="navbar w-full">
+<div class="navbar-container flex items-center justify-between w-full">
+<a href="{% url 'list_products' %}" class="brand text-primary font-bold text-xl">eKart</a>
+<button class="menu-toggle md:hidden" id="menu-toggle" aria-label="Toggle navigation">
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current"></span>
+</button>
+<div class="navbar-links hidden md:flex items-center gap-6" id="navbar-links">
+<a href="{% url 'view_cart' %}" class="cart-overview flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" aria-label="View Cart">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="cart-count bg-primary text-white rounded-full px-2 py-0.5 text-xs font-bold">{{ cart_item_count|default:0  }}</span>
+</a>
+<a href="{% url 'user_orders_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">My Orders</a>
+<a href="{% url 'user_payments_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Payment History</a>
+<a href="{% url 'chat_page' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Chat Assistant</a>
+<form method="POST" action="{% url 'custom_logout' %}" class="logout-form" style="display: inline;">
+{% csrf_token %}
+<button type="submit" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</button>
+</form>
+</div>
+</div>
+</nav>
+</header>
+
+<main class="flex-1">
+<div class="layout-content-container flex flex-col w-full px-4 md:px-10 py-8">
+
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center gap-2 text-sm">
+        <li><a href="{% url 'list_products' %}" class="text-primary hover:underline">Home</a></li>
+        <li class="text-slate-400">/</li>
+        <li><a href="{% url 'user_payments_view' %}" class="text-primary hover:underline">Payments</a></li>
+        <li class="text-slate-400">/</li>
+        <li class="text-slate-600 dark:text-slate-400 font-medium">Invoice #{{ invoice.invoice_id }}</li>
+    </ol>
+</nav>
+
+<!-- Invoice Header -->
+<div class="flex justify-between items-start mb-8">
+    <div>
+        <h1 class="text-4xl font-bold text-[#0d161c] dark:text-white mb-2">Invoice</h1>
+        <p class="text-slate-600 dark:text-slate-400">Invoice #{{ invoice.invoice_id }}</p>
     </div>
+    <button id="print-invoice-btn" class="no-print flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors shadow-lg">
+        <span class="material-symbols-outlined">print</span>
+        Print / PDF
+    </button>
+</div>
+
+<!-- Invoice Container -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
+    
+    <!-- Invoice Top Section -->
+    <div class="grid grid-cols-2 gap-8 mb-12 pb-8 border-b border-slate-200 dark:border-slate-700">
+        <!-- Company Info -->
+        <div>
+            <h3 class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase mb-3">From</h3>
+            <p class="text-xl font-bold text-[#0d161c] dark:text-white mb-2">eKart</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Your trusted online shopping destination</p>
+        </div>
+        
+        <!-- Invoice Details -->
+        <div class="text-right">
+            <div class="space-y-2 text-sm">
+                <p><span class="font-semibold text-[#0d161c] dark:text-white">Invoice Date:</span> <span class="text-slate-600 dark:text-slate-400">{{ invoice.invoice_date|date:"M d, Y" }}</span></p>
+                <p><span class="font-semibold text-[#0d161c] dark:text-white">Invoice ID:</span> <span class="text-primary font-bold">#{{ invoice.invoice_id }}</span></p>
+                <p><span class="font-semibold text-[#0d161c] dark:text-white">Order ID:</span> <span class="text-slate-600 dark:text-slate-400">#{{ invoice.order_id }}</span></p>
+                <p><span class="font-semibold text-[#0d161c] dark:text-white">Payment ID:</span> <span class="text-slate-600 dark:text-slate-400">#{{ invoice.payment_id }}</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill To Section -->
+    <div class="grid grid-cols-2 gap-8 mb-12">
+        <!-- Customer Info -->
+        <div>
+            <h3 class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase mb-3">Bill To</h3>
+            <div class="space-y-2">
+                <p class="text-lg font-bold text-[#0d161c] dark:text-white">{{ invoice.customer_name }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">{{ invoice.customer_email }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400">{{ invoice.customer_address }}</p>
+                {% if phone_numbers %}
+                <div class="pt-2">
+                    <p class="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase mb-1">Phone Numbers:</p>
+                    <div class="space-y-1">
+                        {% for phone in phone_numbers %}
+                        <p class="text-sm text-slate-600 dark:text-slate-400">{{ phone }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Payment Status -->
+        <div class="text-right">
+            <div class="inline-block bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg p-4">
+                <p class="text-xs font-semibold text-green-700 dark:text-green-400 uppercase mb-1">Status</p>
+                <p class="text-2xl font-bold text-green-600 dark:text-green-400">PAID</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="mb-12">
+        <h3 class="text-sm font-semibold text-slate-600 dark:text-slate-400 uppercase mb-4">Order Items</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b-2 border-slate-300 dark:border-slate-600">
+                        <th class="text-left py-3 px-4 text-sm font-semibold text-[#0d161c] dark:text-white">Product</th>
+                        <th class="text-center py-3 px-4 text-sm font-semibold text-[#0d161c] dark:text-white">Quantity</th>
+                        <th class="text-right py-3 px-4 text-sm font-semibold text-[#0d161c] dark:text-white">Unit Price</th>
+                        <th class="text-right py-3 px-4 text-sm font-semibold text-[#0d161c] dark:text-white">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr class="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                        <td class="py-3 px-4 text-sm text-[#0d161c] dark:text-white font-medium">{{ item.product_name }}</td>
+                        <td class="py-3 px-4 text-center text-sm text-slate-600 dark:text-slate-400">{{ item.quantity }}</td>
+                        <td class="py-3 px-4 text-right text-sm text-slate-600 dark:text-slate-400">${{ item.price_per_item }}</td>
+                        <td class="py-3 px-4 text-right text-sm font-semibold text-[#0d161c] dark:text-white">${{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Totals Section -->
+    <div class="flex justify-end mb-12">
+        <div class="w-full md:w-96">
+            <div class="space-y-3 py-4 border-t-2 border-slate-300 dark:border-slate-600">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600 dark:text-slate-400">Subtotal:</span>
+                    <span class="text-[#0d161c] dark:text-white font-medium">${{ invoice.total_amount }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600 dark:text-slate-400">Shipping:</span>
+                    <span class="text-green-600 dark:text-green-400 font-medium">FREE</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-600 dark:text-slate-400">Tax:</span>
+                    <span class="text-[#0d161c] dark:text-white font-medium">$0.00</span>
+                </div>
+                <div class="flex justify-between py-3 border-t-2 border-slate-300 dark:border-slate-600">
+                    <span class="font-bold text-[#0d161c] dark:text-white">Total Amount:</span>
+                    <span class="text-2xl font-bold text-primary">${{ invoice.total_amount }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Info -->
+    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-8">
+        <h3 class="text-sm font-semibold text-[#0d161c] dark:text-white mb-3">Payment Information</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+                <p class="text-slate-600 dark:text-slate-400">Payment ID</p>
+                <p class="font-semibold text-[#0d161c] dark:text-white">#{{ invoice.payment_id }}</p>
+            </div>
+            <div>
+                <p class="text-slate-600 dark:text-slate-400">Status</p>
+                <p class="font-semibold text-green-600 dark:text-green-400">Completed</p>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Footer Notes -->
+    <div class="border-t border-slate-200 dark:border-slate-700 pt-6">
+        <p class="text-xs text-slate-600 dark:text-slate-400 text-center mb-4">Thank you for your purchase! We appreciate your business.</p>
+        <p class="text-xs text-slate-500 dark:text-slate-500 text-center">For any questions regarding this invoice, please contact our customer service team.</p>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="flex gap-4 justify-center mt-8 no-print">
+    <a href="{% url 'user_payments_view' %}" class="flex items-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-[#0d161c] dark:text-white font-bold rounded-lg transition-colors">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Payments
+    </a>
+    <a href="{% url 'list_products' %}" class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white font-bold rounded-lg transition-colors">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        Continue Shopping
+    </a>
+</div>
+
+</div>
+</main>
+
+<!-- Footer - FROM list_products.html -->
+<footer class="no-print bg-slate-100 dark:bg-slate-900 mt-20 px-4 md:px-10 py-12 text-[#0d161c] dark:text-slate-100 border-t border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 container mx-auto">
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Customer Service</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Shipping & Returns</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Order Tracking</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">About Us</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Shop</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">New Arrivals</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Best Sellers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sale</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Company</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sustainability</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Investor Relations</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Newsletter</h4>
+<p class="text-sm mb-4">Subscribe to get special offers and updates!</p>
+<div class="flex gap-2">
+<input type="email" placeholder="Your email" class="flex-grow px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0d161c] dark:text-white">
+<button type="button" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors">→</button>
+</div>
+</div>
+</div>
+<div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+<p class="text-sm text-slate-600 dark:text-slate-400">&copy; {% now "Y" %} eKart. All Rights Reserved.</p>
+</div>
+</footer>
+
+<!-- Go to Top Button -->
+<button id="go-to-top-btn" 
+        class="fixed bottom-6 right-6 w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center z-40"
+        aria-label="Go to top">
+    <span class="material-symbols-outlined">arrow_upward</span>
+</button>
+
+</div>
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('navbar-links');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+        });
+    }
+    
+    // Go to Top Button
+    const goToTopBtn = document.getElementById('go-to-top-btn');
+    if (goToTopBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                goToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                goToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+        
+        goToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    
+    // Print Button
+    const printButton = document.getElementById('print-invoice-btn');
+    if (printButton) {
+        printButton.addEventListener('click', function() {
+            window.print();
+        });
+    }
+});
+</script>
 </body>
 </html>

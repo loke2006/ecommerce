@@ -1,296 +1,600 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Available Products</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>E-Commerce Product Listing</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#3caff6",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101b22",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+              borderRadius: {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+            },
+          },
+        }
+    </script>
     <style>
-        /* Reusing the CSS from the first code */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .navbar {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 10px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            transition: top 0.3s;
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: auto;
-        }
-
-        .brand {
-            color: white;
-            font-size: 24px;
-            text-decoration: none;
-        }
-
-        .navbar-links {
-            display: flex;
-        }
-
-        .nav-item {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-        .nav-item:hover {
-            text-decoration: underline;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 80px 20px 20px;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        ul.products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            list-style: none;
-            padding: 0;
-        }
-
-        li.product-item {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        li.product-item img {
-            max-width: 100%;
-            max-height: 250px;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-/* styles.css */
-
-/* Filter Form Styling */
-.filter-form {
-    margin-top: 10px;
-}
-
-.filter-options {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 15px; /* Space between filter options */
-    margin-bottom: 15px; /* Space below the filter options */
-}
-
-.filter-options div {
-    flex: 1; /* Allows filter options to grow equally */
-    min-width: 150px; /* Minimum width for filter options */
-}
-
-label {
-    font-weight: bold;
-    margin-right: 10px; /* Space between label and select/input */
-}
-
-/* Search Bar Styling */
-.search-bar {
-    display: flex;
-    justify-content: center; /* Center the search bar */
-}
-
-.search-bar input[type="text"] {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    flex: 1; /* Allows input to take available space */
-    max-width: 500px; /* Maximum width for the search bar */
-}
-
-.search-bar button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px; /* Space between input and button */
-    transition: background-color 0.3s;
-}
-
-.search-bar button:hover {
-    background-color: #0056b3;
-}
-
-
-form.num{
-    margin-top: 10px;
-}
-
-label {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-select:focus {
-    border-color: #007bff;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-
-        a {
-            color: white;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 20px;
-            margin-left: 10px;
-            margin-right:2px;
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         
-
-        a:hover {
-            text-decoration: underline;
+        .carousel-container {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .carousel-slide {
+          display: none;
+          animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .carousel-slide.active {
+          display: block;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .carousel-dots {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          position: absolute;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 10;
+        }
+        
+        .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: rgba(255, 255, 255, 0.5);
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        
+        .dot.active {
+          background-color: rgba(255, 255, 255, 1);
+        }
+        
+        .carousel-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: rgba(0, 0, 0, 0.3);
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          cursor: pointer;
+          font-size: 18px;
+          transition: background-color 0.3s ease;
+          z-index: 5;
+        }
+        
+        .carousel-btn:hover {
+          background-color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .carousel-prev {
+          left: 10px;
+        }
+        
+        .carousel-next {
+          right: 10px;
+        }
+        
+        .logout-form {
+          display: inline;
+          margin: 0;
+          padding: 0;
+        }
+        
+        .logout-btn {
+          background: none;
+          border: none;
+          color: inherit;
+          cursor: pointer;
+          font: inherit;
+          padding: 0;
+          margin: 0;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          width: 100%; /* Make logout button full-width inside dropdown */
+        }
+        
+        /* Mobile Nav Styling */
+        .navbar-links.nav-active {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 50;
+            border-bottom: 1px solid #e5e7eb; /* slate-200 */
+            padding: 1rem;
+            gap: 0.5rem !important;
+        }
+        
+        .dark .navbar-links.nav-active {
+            background: #101b22; /* background-dark */
+            border-bottom: 1px solid #334155; /* slate-700 */
+        }
+        
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex !important;
+                flex-direction: row !important;
+                position: static !important;
+                background: transparent !important;
+                border-bottom: none !important;
+                padding: 0 !important;
+            }
         }
     </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="#" class="brand">eKart</a>
-            <div class="navbar-links">
-                <a href="{% url 'view_cart' %}">ViewCart</a>
-                <a href="{% url 'user_orders_view' %}">My Orders</a>
-                <a href="{% url 'user_payments_view' %}">PaymentHistorys</a>
-                <a href="{% url 'review_page' 1 %}">Reviews</a>
-            </div>
+<!-- nav-->
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0d161c] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-4 md:px-10 py-3 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+<nav class="navbar w-full">
+<div class="navbar-container flex items-center justify-between w-full">
+<a href="{% url 'list_products' %}" class="brand text-primary font-bold text-xl">eKart</a>
+<button class="menu-toggle md:hidden" id="menu-toggle" aria-label="Toggle navigation">
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current"></span>
+</button>
+<div class="navbar-links hidden md:flex items-center gap-6" id="navbar-links">
+<a href="{% url 'view_cart' %}" class="cart-overview flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" aria-label="View Cart">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="cart-count bg-primary text-white rounded-full px-2 py-0.5 text-xs font-bold">{{cart_item_count|default:0 }}</span>
+</a>
+<a href="{% url 'user_orders_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">My Orders</a>
+<a href="{% url 'user_payments_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Payment History</a>
+<a href="{% url 'chat_page' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Chat Assistant</a>
+
+<div class="relative">
+    <button id="profile-menu-button" class="nav-item flex items-center gap-1 text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">
+        <span class="material-symbols-outlined">person</span>
+        <span>Profile</span>
+        <span class="material-symbols-outlined !text-base">expand_more</span>
+    </button>
+
+    <div id="profile-menu-panel" class="hidden absolute right-0 mt-2 w-72 origin-top-right bg-white dark:bg-slate-800 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+        <div class="p-4">
+            {% if customer %}
+                <p class="font-bold text-lg text-[#0d161c] dark:text-white">{{ customer.name }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">{{ customer.email }}</p>
+                
+                <hr class="my-2 border-slate-200 dark:border-slate-700">
+
+                <div class="text-sm text-slate-600 dark:text-slate-400">
+                    <p class="font-semibold text-xs text-slate-500 dark:text-slate-400">Address:</p>
+                    <p class="text-sm">{{ customer.house_number }}, {{ customer.city }}, {{ customer.state }}</p>
+                </div>
+
+                <div class="mt-2 text-sm text-slate-600 dark:text-slate-400">
+                    <p class="font-semibold text-xs text-slate-500 dark:text-slate-400">Phone:</p>
+                    {% for phone in phone_numbers %}
+                        <p class="text-sm">{{ phone.number }}</p>
+                    {% empty %}
+                        <p class="text-sm">No phone number on file.</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="font-bold text-lg text-[#0d161c] dark:text-white">{{ request.user.username }}</p>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">Customer profile not found.</p>
+            {% endif %}
+
+            <hr class="my-3 border-slate-200 dark:border-slate-700">
+
+            <form method="POST" action="{% url 'custom_logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn nav-item text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium transition-colors">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Logout</span>
+                </button>
+            </form>
         </div>
-    </nav>
-
-    <div class="container">
-        <h1>Available Products</h1>
-        <form method="get" action="{% url 'list_products' %}" class="filter-form">
-            <div class="filter-options">
-                <div>
-                    <label for="order_by">Order By:</label>
-                    <select name="order_by" id="order_by">
-                        <option value="asc" {% if order_by == 'asc' %}selected{% endif %}>Price: Low to High</option>
-                        <option value="desc" {% if order_by == 'desc' %}selected{% endif %}>Price: High to Low</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="category">Category:</label>
-                    <select name="category" id="category">
-                        <option value="">All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.name }}" {% if category_filter == category.name %}selected{% endif %}>{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <label for="supplier">Supplier:</label>
-                    <select name="supplier" id="supplier">
-                        <option value="">All Suppliers</option>
-                        {% for supplier in suppliers %}
-                            <option value="{{ supplier.name }}" {% if supplier_filter == supplier.name %}selected{% endif %}>{{ supplier.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div>
-                    <label for="min_price">Min Price:</label>
-                    <input type="number" name="min_price" id="min_price" placeholder="0" value="{{ min_price }}">
-                </div>
-                <div>
-                    <label for="max_price">Max Price:</label>
-                    <input type="number" name="max_price" id="max_price" placeholder="1000" value="{{ max_price }}">
-                </div>
-                <div>
-                    <button type="submit">Filter</button>
-                </div>
-            </div>
-
-            <div class="search-bar">
-                <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}">
-                <button type="submit">Search</button>
-            </div>
-        </form>
-        
-        <ul class="products-grid">
-            {% for product in products %}
-                <li class="product-item">
-                    <img src="{% static 'store/images/' %}{{ product.id }}.jpg" alt="{{ product.name }}">
-                    <h2>{{ product.name }}</h2>
-                    <p>Price: ${{ product.price }}</p>
-                    <p>{{ product.description }}</p>
-                    <p><strong>Category:</strong> {{ product.category_name }}</p>
-                    <p><strong>Supplier:</strong> {{ product.supplier_name }} (Contact: {{ product.supplier_contact }})</p>
-                    <p>Stock: {{ product.stock }}</p>
-                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <label for="quantity-{{ product.id }}">Quantity:</label>
-                        <input type="number" id="quantity-{{ product.id }}" name="quantity" min="1" max="{{ product.stock }}" required>
-                        <button type="submit">Add to Cart</button>
-                    </form>
-                    <form method="POST" action="{% url 'order_product' product.id %}">
-                        {% csrf_token %}
-                        <label for="order-quantity-{{ product.id }}">Quantity:</label>
-                        <input type="number" id="order-quantity-{{ product.id }}" name="quantity" min="1" max="{{ product.stock }}" required>
-                        <button type="submit">Order</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
     </div>
-    <script src="script.js"></script>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<!--slideshow -->
+<main class="flex-1">
+<div class="layout-content-container flex flex-col w-full">
+
+<div class="@container mb-8 carousel-container">
+<div class="relative">
+  <div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/f78f72f3-ec51-4940-8dd5-ce85c69a94c7.png");'>
+    <div class="max-w-md">
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Exclusive Deals</h1>
+      <p class="mb-6 text-lg">Don't miss out! Grab your favorite items at unbeatable prices. Free shipping on orders over $50.</p>
+    </div>
+    </div>
+</div>
+
+<div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b663d9e7-1af8-4386-a033-b4a7efb482f0.png");'>
+    <div class="max-w-md">
+      <div class="inline-block bg-red-600 px-4 py-2 rounded-full mb-4 font-bold text-sm">⚡ FLASH SALE</div>
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Up to 70% OFF</h1>
+      <p class="mb-6 text-lg">Limited time offer! Don't miss these incredible discounts on your favorite items.</p>
+    </div>
+    </div>
+</div>
+
+<div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/52658330-7060-49e7-ad3c-6069c55ca6d8.png");'>
+    <div class="max-w-md">
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">FREE SHIPPING</h1>
+      <p class="mb-6 text-lg">On all orders over $50! Fast delivery, hassle-free returns, guaranteed satisfaction.</p>
+    </div>
+    </div>
+</div>
+
+<div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/24d5fd93-e2e7-42e0-95c7-3727e9458878.png");'>
+    <div class="max-w-md">
+      <div class="inline-block bg-yellow-400 text-purple-900 px-4 py-2 rounded-full mb-4 font-bold text-sm">✨ VIP EXCLUSIVE</div>
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Member Benefits</h1>
+      <p class="mb-6 text-lg">Unlock exclusive perks, early access to sales, and special rewards with membership.</p>
+    </div>
+    </div>
+</div>
+
+<div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/bff6b649-90ea-45bf-aefa-9408496a7082.png");'>
+    <div class="max-w-md">
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">Trending Now</h1>
+      <p class="mb-6 text-lg">Check out the hottest picks of the season. What everyone is talking about, buy now!</p>
+    </div>
+    </div>
+</div>
+
+<div class="carousel-slide">
+    <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-xl min-h-[400px] p-8 text-white relative" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 50%), url("https://user-gen-media-assets.s3.amazonaws.com/seedream_images/52fe1eab-436d-4b55-9c22-bb38c3c0b9fe.png");'>
+    <div class="max-w-md">
+      <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-4">New Collection</h1>
+      <p class="mb-6 text-lg">Discover the latest trends and premium quality products curated just for you.</p>
+    </div>
+    </div>
+</div>
+
+  <button class="carousel-btn carousel-prev" id="prev-btn" onclick="changeSlide(-1)">
+    <span class="material-symbols-outlined">chevron_left</span>
+  </button>
+  <button class="carousel-btn carousel-next" id="next-btn" onclick="changeSlide(1)">
+    <span class="material-symbols-outlined">chevron_right</span>
+  </button>
+
+  <div class="carousel-dots">
+    <span class="dot active" onclick="currentSlide(0)"></span>
+    <span class="dot" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+    <span class="dot" onclick="currentSlide(4)"></span>
+    <span class="dot" onclick="currentSlide(5)"></span>
+    <span class="dot" onclick="currentSlide(6)"></span>
+  </div>
+</div>
+</div>
+
+<!--filter-->
+<div class="flex flex-col lg:flex-row gap-8 px-4 md:px-10 py-6 md:py-12">
+<aside class="w-full lg:w-1/4 xl:w-1/5">
+<div class="sticky top-24">
+<h3 class="text-xl font-bold mb-4 text-[#0d161c] dark:text-white">Filters</h3>
+
+<form method="get" action="{% url 'list_products' %}" class="space-y-6" id="filter-form">
+
+<div>
+<label class="block text-sm font-semibold mb-2 text-[#0d161c] dark:text-slate-200">Search</label>
+<input type="text" name="search" placeholder="Search products..." value="{{ search_query }}" class="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm"/>
+</div>
+
+<div>
+<label for="category" class="block text-sm font-semibold mb-2 text-[#0d161c] dark:text-slate-200">Category</label>
+<select name="category" id="category" class="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+<option value="">All Categories</option>
+{% for category in categories %}
+<option value="{{ category.name }}" {% if category_filter == category.name %}selected{% endif %}>{{ category.name }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div>
+<label for="supplier" class="block text-sm font-semibold mb-2 text-[#0d161c] dark:text-slate-200">Supplier</label>
+<select name="supplier" id="supplier" class="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm">
+<option value="">All Suppliers</option>
+{% for supplier in suppliers %}
+<option value="{{ supplier.name }}" {% if supplier_filter == supplier.name %}selected{% endif %}>{{ supplier.name }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div>
+<label for="min_price" class="block text-sm font-semibold mb-2 text-[#0d161c] dark:text-slate-200">Min Price: $<span id="min-display">{{ min_price|default:0 }}</span></label>
+<input type="number" name="min_price" id="min_price" placeholder="0" value="{{ min_price|default:0 }}" class="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm"/>
+</div>
+
+<div>
+<label for="max_price" class="block text-sm font-semibold mb-2 text-[#0d161c] dark:text-slate-200">Max Price: $<span id="max-display">{{ max_price|default:1000 }}</span></label>
+<input type="number" name="max_price" id="max_price" placeholder="1000" value="{{ max_price|default:1000 }}" class="w-full px-3 py-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm"/>
+</div>
+
+<div class="filter-button-container flex gap-2">
+<button type="submit" class="flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 rounded-lg transition-colors text-sm">Apply Filters</button>
+<a href="{% url 'list_products' %}" class="flex-1 bg-slate-400 hover:bg-slate-500 text-white font-medium py-2 rounded-lg transition-colors text-sm text-center">Clear Filters</a>
+</div>
+
+</form>
+</div>
+</aside>
+
+<div class="flex-1">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-2xl font-bold text-[#0d161c] dark:text-white">All Products</h2>
+<div class="flex items-center gap-2">
+<label class="text-sm font-medium text-slate-600 dark:text-slate-400">Sort by:</label>
+<form method="get" action="{% url 'list_products' %}" class="flex">
+<input type="hidden" name="category" value="{{ category_filter }}"/>
+<input type="hidden" name="supplier" value="{{ supplier_filter }}"/>
+<input type="hidden" name="min_price" value="{{ min_price }}"/>
+<input type="hidden" name="max_price" value="{{ max_price }}"/>
+<input type="hidden" name="search" value="{{ search_query }}"/>
+<select name="order_by" class="form-select rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm" onchange="this.form.submit()">
+<option value="">Default</option>
+<option value="asc" {% if order_by == 'asc' %}selected{% endif %}>Price: Low to High</option>
+<option value="desc" {% if order_by == 'desc' %}selected{% endif %}>Price: High to Low</option>
+</select>
+</form>
+</div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+{% for product in products %}
+<div class="flex flex-col gap-3 pb-3 group bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-shadow hover:shadow-lg dark:hover:border-primary/50">
+
+<div class="w-full bg-center bg-no-repeat aspect-[3/4] bg-cover relative overflow-hidden" style='background-image: url("{% static "store/images/" %}{{ product.id }}.jpg");'>
+<div class="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+
+</div>
+{% if product.stock == 0 %}<span class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">Out of Stock</span>{% endif %}
+</div>
+
+<div class="p-4 pt-0 flex flex-col flex-1">
+<p class="text-[#0d161c] dark:text-white text-base font-medium leading-normal mb-1">{{ product.name }}</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-2">{{ product.description }}</p>
+<div class="text-xs text-slate-500 dark:text-slate-400 mb-2">
+<p><strong>Category:</strong> {{ product.category_name }}</p>
+<p><strong>Supplier:</strong> {{ product.supplier_name }} ({{ product.supplier_contact }})</p>
+<p><strong>Stock:</strong> {{ product.stock }}</p>
+</div>
+<div class="flex items-center justify-between mb-3">
+<p class="text-slate-800 dark:text-slate-200 font-bold text-lg">${{ product.price }}</p>
+<div class="flex items-center text-sm text-yellow-400">
+<span class="material-symbols-outlined !text-base">star</span>
+<span class="text-slate-500 dark:text-slate-400 ml-1">4.5</span>
+</div>
+</div>
+
+<form method="post" action="{% url 'add_to_cart' product.id %}" class="mb-2">
+{% csrf_token %}
+<div class="flex items-center gap-2 mb-2">
+<label class="text-xs font-medium" for="quantity-{{ product.id }}">Qty:</label>
+<input type="number" name="quantity" id="quantity-{{ product.id }}" min="1" max="{{ product.stock }}" value="1" class="form-input w-12 rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs" {% if product.stock == 0 %}disabled{% endif %}/>
+</div>
+<button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 rounded-lg transition-colors text-sm flex items-center justify-center gap-1" {% if product.stock == 0 %}disabled{% endif %}>
+<span class="material-symbols-outlined text-base">add_shopping_cart</span>Add to Cart
+</button>
+</form>
+
+<form method="POST" action="{% url 'order_product' product.id %}" class="product-form">
+{% csrf_token %}
+<div class="flex items-center gap-2 mb-2">
+<label class="text-xs font-medium" for="order-quantity-{{ product.id }}">Order Qty:</label>
+<input type="number" id="order-quantity-{{ product.id }}" name="quantity" value="1" min="1" max="{{ product.stock }}" required class="form-input w-12 rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs" {% if product.stock == 0 %}disabled{% endif %}/>
+</div>
+<button type="submit" class="w-full bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 rounded-lg transition-colors text-sm" {% if product.stock == 0 %}disabled{% endif %}>Order Now</button>
+</form>
+
+<a href="{% url 'review_page' product.id %}" class="text-xs text-primary mt-2 text-center hover:underline">View Reviews</a>
+</div>
+</div>
+{% empty %}
+<div class="col-span-full py-20 text-center">
+<span class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700 inline-block mb-4">sentiment_dissatisfied</span>
+<h3 class="text-xl font-bold text-slate-600 dark:text-slate-300 mb-2">No products found</h3>
+<p class="text-slate-500 dark:text-slate-400">Try adjusting your search or filter options.</p>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<footer class="bg-slate-100 dark:bg-slate-900 mt-20 px-4 md:px-10 py-12 text-[#0d161c] dark:text-slate-100 border-t border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 container mx-auto">
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Customer Service</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="{% url 'user_orders_view' %}">Shipping & Returns</a></li>
+<li><a class="hover:text-primary transition-colors" href="{% url 'user_orders_view' %}">Order Tracking</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">About Us</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">My Account</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Sign In</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">My Wishlist</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Order History</a></li>
+</ul>
+</div>
+<div class="col-span-2 md:col-span-1">
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Newsletter</h4>
+<p class="text-sm mb-3">Subscribe for updates and special offers.</p>
+<form class="flex">
+<input class="form-input w-full rounded-l-lg border-slate-300 dark:border-slate-700 bg-background-light dark:bg-slate-800 text-sm focus:ring-primary/50 focus:border-primary" placeholder="Your email" type="email"/>
+<button class="bg-primary text-white px-4 rounded-r-lg hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">send</span>
+</button>
+</form>
+</div>
+</div>
+<div class="mt-12 border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
+<p>© {% now "Y" %} Shopify. All Rights Reserved.</p>
+<div class="flex space-x-4 mt-4 md:mt-0">
+<a class="hover:text-primary transition-colors" href="#">Facebook</a>
+<a class="hover:text-primary transition-colors" href="#">Instagram</a>
+<a class="hover:text-primary transition-colors" href="#">Twitter</a>
+</div>
+</div>
+</footer>
+
+</div>
+</div>
+
+<script>
+// --- Carousel Logic ---
+let currentSlideIndex = 0;
+const slides = document.querySelectorAll('.carousel-slide');
+const dots = document.querySelectorAll('.dot');
+
+function showSlide(index) {
+    if (slides.length === 0) return; // Prevent error if no slides
+    // Remove active class from all slides and dots
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Add active class to current slide and dot
+    slides[index].classList.add('active');
+    dots[index].classList.add('active');
+}
+
+function changeSlide(direction) {
+    if (slides.length === 0) return; // Prevent error if no slides
+    currentSlideIndex += direction;
+    
+    // Loop around if at the end
+    if (currentSlideIndex >= slides.length) {
+        currentSlideIndex = 0;
+    } else if (currentSlideIndex < 0) {
+        currentSlideIndex = slides.length - 1;
+    }
+    
+    showSlide(currentSlideIndex);
+}
+
+function currentSlide(index) {
+    currentSlideIndex = index;
+    showSlide(currentSlideIndex);
+}
+
+// Auto-rotate carousel every 5 seconds
+setInterval(() => {
+    changeSlide(1);
+}, 5000);
+
+// Show the first slide on page load
+if (slides.length > 0) {
+    showSlide(currentSlideIndex);
+}
+
+
+// --- Main DOMContentLoaded ---
+document.addEventListener("DOMContentLoaded", function () {
+    // --- Mobile Menu Toggle (FIXED) ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('navbar-links');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active'); // Use class from CSS
+            menuToggle.classList.toggle('active');
+        });
+    }
+    
+    // --- Price Range Display Update ---
+    const minPriceInput = document.getElementById('min_price');
+    const maxPriceInput = document.getElementById('max_price');
+    const minDisplay = document.getElementById('min-display');
+    const maxDisplay = document.getElementById('max-display');
+    
+    if (minPriceInput && minDisplay) {
+        minPriceInput.addEventListener('input', (e) => {
+            minDisplay.textContent = e.target.value || 0;
+        });
+    }
+    
+    if (maxPriceInput && maxDisplay) {
+        maxPriceInput.addEventListener('input', (e) => {
+            maxDisplay.textContent = e.target.value || 1000;
+        });
+    }
+
+    // --- Profile Dropdown Toggle ---
+    const profileBtn = document.getElementById('profile-menu-button');
+    const profilePanel = document.getElementById('profile-menu-panel');
+    
+    if (profileBtn && profilePanel) {
+        profileBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Stop click from bubbling to document
+            profilePanel.classList.toggle('hidden');
+        });
+    }
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', (event) => {
+        if (profilePanel && !profilePanel.classList.contains('hidden')) {
+            // Check if the click is outside the button AND outside the panel
+            if (!profileBtn.contains(event.target) && !profilePanel.contains(event.target)) {
+                profilePanel.classList.add('hidden');
+            }
+        }
+    });
+});
+</script>
 </body>
 </html>

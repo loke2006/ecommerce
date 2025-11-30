@@ -1,181 +1,508 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eKart Your Orders</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>My Orders - eKart</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#3caff6",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101b22",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+            },
+          },
+        }
+    </script>
     <style>
- 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .navbar-links.nav-active {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            z-index: 50;
+        }
+        
+        .dark .navbar-links.nav-active {
+            background: #1e293b;
+        }
+        
+        @media (min-width: 768px) {
+            .navbar-links {
+                display: flex !important;
+                flex-direction: row !important;
+                position: static !important;
+                background: transparent !important;
+            }
+        }
 
-.navbar {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .order-card {
+            animation: fadeIn 0.5s ease;
+        }
 
-.brand {
-    color: white;
-    font-size: 24px;
-    text-decoration: none;
-}
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-.navbar-links {
-    display: flex;
-}
+        .badge-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
 
-.nav-item {
-    color: white;
-    text-decoration: none;
-    margin-left: 20px;
-    margin-right: 20px;
-}
+        .badge-shipped {
+            background-color: #bfdbfe;
+            color: #1e40af;
+        }
 
-.nav-item:hover {
-    text-decoration: underline;
-}
+        .badge-delivered {
+            background-color: #dcfce7;
+            color: #166534;
+        }
 
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 80px 20px 20px; 
-}
+        .dark .badge-pending {
+            background-color: #78350f;
+            color: #fcd34d;
+        }
 
-h1 {
-    text-align: center;
-}
+        .dark .badge-shipped {
+            background-color: #082f49;
+            color: #93c5fd;
+        }
 
-.order {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    margin: 20px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .dark .badge-delivered {
+            background-color: #064e3b;
+            color: #86efac;
+        }
 
-.order h2 {
-    margin: 0;
-}
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-th {
-    background-color: #f2f2f2;
-}
+        .order-table thead {
+            background-color: #f9fafb;
+        }
 
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+        .dark .order-table thead {
+            background-color: #1f2937;
+        }
 
-select#status {
-    width: 10%;
-    padding: 12px;
-    border: 2px solid #007bff; /* Blue border to match the navbar */
-    border-radius: 5px;
-    font-size: 1em;
-    background-color: #f0f8ff;
-    color: #333;
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus effect */
-}
+        .order-table th, .order-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
 
-select#status:focus {
-    outline: none;
-    border-color: #0056b3; /* Darker blue on focus */
-    box-shadow: 0 0 5px rgba(0, 86, 179, 0.5); /* Subtle shadow for focus */
-}
+        .dark .order-table th, .dark .order-table td {
+            border-bottom-color: #374151;
+        }
 
-button {
-    display: block;
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition */
-}
+        .order-table tbody tr:hover {
+            background-color: #f3f4f6;
+        }
 
-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3); /* Subtle shadow on hover */
-}
-
+        .dark .order-table tbody tr:hover {
+            background-color: #111827;
+        }
     </style>
 </head>
-<body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="#" class="brand">eKart</a>
-            <div class="navbar-links">
-                <a href="{% url 'view_cart' %}" class="nav-item">View Cart</a>  
-                <a href="{% url 'list_products' %}" class="nav-item">Products</a>
-                <a href="{% url 'user_payments_view' %}" class="nav-item">Payment History</a>
-            </div>
-        </div>
-    </nav>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0d161c] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
 
-    <div class="container">
-        <h1>Orders</h1>
-        <form method="get" action="{% url 'orders_by_status' %}">
-            <label for="status">Order Status:</label>
-            <select name="status" id="status">
-                <option value="Pending">Pending</option>
-                <option value="Shipped">Shipped</option>
-            </select>
-            <button type="submit">Filter</button>
-        </form>
-        
-        <table>
+<!-- Navbar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-4 md:px-10 py-3 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+<nav class="navbar w-full">
+<div class="navbar-container flex items-center justify-between w-full">
+<a href="{% url 'list_products' %}" class="brand text-primary font-bold text-xl">eKart</a>
+<button class="menu-toggle md:hidden" id="menu-toggle" aria-label="Toggle navigation">
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current mb-1.5"></span>
+<span class="block w-6 h-0.5 bg-current"></span>
+</button>
+<div class="navbar-links hidden md:flex items-center gap-6" id="navbar-links">
+<a href="{% url 'view_cart' %}" class="cart-overview flex items-center gap-2 text-primary hover:opacity-80 transition-opacity" aria-label="View Cart">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="cart-count bg-primary text-white rounded-full px-2 py-0.5 text-xs font-bold">{{ cart_item_count|default:0  }}</span>
+</a>
+<a href="{% url 'user_orders_view' %}" class="nav-item text-primary dark:text-primary text-sm font-bold transition-colors">My Orders</a>
+<a href="{% url 'user_payments_view' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Payment History</a>
+<a href="{% url 'chat_page' %}" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors">Chat Assistant</a>
+<form method="POST" action="{% url 'custom_logout' %}" class="logout-form" style="display: inline;">
+{% csrf_token %}
+<button type="submit" class="nav-item text-[#0d161c] dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 text-sm font-medium transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</button>
+</form>
+</div>
+</div>
+</nav>
+</header>
+
+<main class="flex-1">
+<div class="layout-content-container flex flex-col w-full px-4 md:px-10 py-8">
+
+<!-- Breadcrumb -->
+<nav class="mb-6">
+    <ol class="flex items-center gap-2 text-sm">
+        <li><a href="{% url 'list_products' %}" class="text-primary hover:underline">Home</a></li>
+        <li class="text-slate-400">/</li>
+        <li class="text-slate-600 dark:text-slate-400 font-medium">My Orders</li>
+    </ol>
+</nav>
+
+<!-- Page Header -->
+<div class="mb-8">
+    <h1 class="text-4xl font-bold text-[#0d161c] dark:text-white mb-2">My Orders</h1>
+    <p class="text-slate-600 dark:text-slate-400">View all your orders and their details</p>
+</div>
+
+<!-- Summary Cards - 4 COLUMNS -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <!-- Total Orders -->
+    <div class="bg-gradient-to-br from-primary to-blue-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90 mb-2">Total Orders</p>
+                <h2 class="text-3xl font-bold">{{ order_details|length }}</h2>
+            </div>
+            <span class="material-symbols-outlined text-5xl opacity-30">shopping_bag</span>
+        </div>
+    </div>
+
+    <!-- Pending Orders -->
+    <div class="bg-gradient-to-br from-yellow-400 to-orange-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90 mb-2">Pending Orders</p>
+                <h2 class="text-3xl font-bold" id="pendingCount">0</h2>
+            </div>
+            <span class="material-symbols-outlined text-5xl opacity-30">schedule</span>
+        </div>
+    </div>
+
+    <!-- Shipped Orders -->
+    <div class="bg-gradient-to-br from-purple-400 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90 mb-2">Shipped Orders</p>
+                <h2 class="text-3xl font-bold" id="shippedCount">0</h2>
+            </div>
+            <span class="material-symbols-outlined text-5xl opacity-30">local_shipping</span>
+        </div>
+    </div>
+
+    <!-- Delivered Orders -->
+    <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm opacity-90 mb-2">Delivered Orders</p>
+                <h2 class="text-3xl font-bold" id="deliveredCount">0</h2>
+            </div>
+            <span class="material-symbols-outlined text-5xl opacity-30">check_circle</span>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter Section -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 p-4 mb-8">
+    <div class="flex flex-col md:flex-row gap-4">
+        <input type="text" id="searchInput" placeholder="Search by Order ID..." class="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-[#0d161c] dark:text-white focus:outline-none focus:border-primary">
+        <select id="filterStatus" class="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-[#0d161c] dark:text-white focus:outline-none focus:border-primary">
+            <option value="">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+        </select>
+    </div>
+</div>
+
+<!-- Orders List -->
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h2 class="text-xl font-bold text-[#0d161c] dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined">list</span>
+            Your Orders
+        </h2>
+    </div>
+
+    {% if not order_details %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <span class="material-symbols-outlined">shopping_bag</span>
+        </div>
+        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">No Orders Yet</h3>
+        <p class="text-slate-500 dark:text-slate-400 mb-6">You haven't placed any orders yet. Start shopping to see your orders here.</p>
+        <a href="{% url 'list_products' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2 w-fit mx-auto">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            Start Shopping
+        </a>
+    </div>
+
+    {% else %}
+    <!-- Desktop Table - NO ACTIONS COLUMN -->
+    <div class="hidden md:block overflow-x-auto">
+        <table class="order-table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Customer ID</th>
-                    <th>Order Date</th>
-                    <th>Status</th>
-                    <th>Total Amount</th>
+                    <th class="font-bold">Order ID</th>
+                    <th class="font-bold">Order Date</th>
+                    <th class="font-bold">Total Amount</th>
+                    <th class="font-bold">Items</th>
+                    <th class="font-bold">Status</th>
                 </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td>{{ order.0 }}</td>
-                    <td>{{ order.1 }}</td>
-                    <td>{{ order.2 }}</td>
-                    <td>{{ order.3 }}</td>
-                    <td>{{ order.4 }}</td>
+                {% for order in order_details %}
+                <tr class="order-card" data-order-id="{{ order.order_id }}" data-status="{{ order.status }}">
+                    <td class="font-semibold text-primary">#{{ order.order_id }}</td>
+                    <td>{{ order.order_date|date:"M d, Y" }}</td>
+                    <td class="font-bold text-lg">${{ order.total_amount }}</td>
+                    <td class="text-center">
+                        <span class="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full text-sm font-semibold">{{ order.items|length }}</span>
+                    </td>
+                    <td>
+                        {% if order.status == 'Pending' %}
+                        <span class="badge badge-pending">⏳ Pending</span>
+                        {% elif order.status == 'Shipped' %}
+                        <span class="badge badge-shipped">📦 Shipped</span>
+                        {% elif order.status == 'Delivered' %}
+                        <span class="badge badge-delivered">✓ Delivered</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    <!-- Mobile Cards - NO ACTIONS BUTTON -->
+    <div class="md:hidden space-y-4 p-6">
+        {% for order in order_details %}
+        <div class="order-card bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-grow">
+                    <p class="text-sm text-slate-600 dark:text-slate-400">Order #{{ order.order_id }}</p>
+                    <p class="text-xl font-bold text-primary mt-1">${{ order.total_amount }}</p>
+                </div>
+                {% if order.status == 'Pending' %}
+                <span class="badge badge-pending">⏳ Pending</span>
+                {% elif order.status == 'Shipped' %}
+                <span class="badge badge-shipped">📦 Shipped</span>
+                {% elif order.status == 'Delivered' %}
+                <span class="badge badge-delivered">✓ Delivered</span>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                    <span class="text-slate-600 dark:text-slate-400">Order Date:</span>
+                    <span class="font-semibold text-slate-700 dark:text-slate-300">{{ order.order_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-600 dark:text-slate-400">Items:</span>
+                    <span class="font-semibold text-slate-700 dark:text-slate-300">{{ order.items|length }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Info Box -->
+<div class="mt-8 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+    <div class="flex items-start gap-3">
+        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 mt-0.5">info</span>
+        <div>
+            <p class="font-semibold text-blue-900 dark:text-blue-300 mb-1">💡 Order Status</p>
+            <ul class="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+                <li>⏳ <strong>Pending:</strong> Your order is being processed</li>
+                <li>📦 <strong>Shipped:</strong> Your order is on the way</li>
+                <li>✓ <strong>Delivered:</strong> Your order has been delivered</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-slate-100 dark:bg-slate-900 mt-20 px-4 md:px-10 py-12 text-[#0d161c] dark:text-slate-100 border-t border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 container mx-auto">
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Customer Service</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Shipping & Returns</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Order Tracking</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">About Us</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Press</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Shop</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">New Arrivals</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Best Sellers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sale</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Company</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Blog</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sustainability</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Investor Relations</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold text-[#0d161c] dark:text-slate-200 mb-4">Newsletter</h4>
+<p class="text-sm mb-4">Subscribe to get special offers and updates!</p>
+<div class="flex gap-2">
+<input type="email" placeholder="Your email" class="flex-grow px-3 py-2 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0d161c] dark:text-white">
+<button type="button" class="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-md text-sm font-medium transition-colors">→</button>
+</div>
+</div>
+</div>
+<div class="text-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+<p class="text-sm text-slate-600 dark:text-slate-400">&copy; {% now "Y" %} eKart. All Rights Reserved.</p>
+</div>
+</footer>
+
+<!-- Go to Top Button -->
+<button id="go-to-top-btn" 
+        class="fixed bottom-6 right-6 w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center justify-center z-40"
+        aria-label="Go to top">
+    <span class="material-symbols-outlined">arrow_upward</span>
+</button>
+
+</div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Orders page loaded");
     
-    <script src="script.js"></script>
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('navbar-links');
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+        });
+    }
+
+    // Calculate statistics
+    function updateStatistics() {
+        let pendingCount = 0;
+        let shippedCount = 0;
+        let deliveredCount = 0;
+
+        document.querySelectorAll('.order-card').forEach(row => {
+            const status = row.dataset.status;
+            if (status === 'Pending') pendingCount++;
+            else if (status === 'Shipped') shippedCount++;
+            else if (status === 'Delivered') deliveredCount++;
+        });
+
+        document.getElementById('pendingCount').textContent = pendingCount;
+        document.getElementById('shippedCount').textContent = shippedCount;
+        document.getElementById('deliveredCount').textContent = deliveredCount;
+    }
+
+    updateStatistics();
+
+    // Search & Filter
+    const searchInput = document.getElementById('searchInput');
+    const filterStatus = document.getElementById('filterStatus');
+
+    function filterOrders() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedStatus = filterStatus.value;
+
+        document.querySelectorAll('.order-card').forEach(row => {
+            const orderId = row.dataset.orderId || '';
+            const status = row.dataset.status || '';
+            
+            const matchesSearch = orderId.includes(searchTerm) || !searchTerm;
+            const matchesStatus = !selectedStatus || status === selectedStatus;
+            
+            row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterOrders);
+    filterStatus.addEventListener('change', filterOrders);
+
+    // Go to Top Button
+    const goToTopBtn = document.getElementById('go-to-top-btn');
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            goToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+        } else {
+            goToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+        }
+    });
+    
+    goToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+});
+</script>
 </body>
 </html>
