@@ -673,7 +673,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 # --- 1. YOUR API KEY ---
-YOUR_NEW_SAFE_API_KEY = "AIzaSyBdKpLXkkQYQVVci78_b6tGEl3WG9tN0rc"
+YOUR_NEW_SAFE_API_KEY = "AIzaSyBtgqgKpCOittnS5qQYb6jTSodNbVoNl_4"
 genai.configure(api_key=YOUR_NEW_SAFE_API_KEY)
 
 
